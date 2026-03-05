@@ -20,9 +20,8 @@ from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     BitsAndBytesConfig,
-    TrainingArguments,
 )
-from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
+from trl import SFTTrainer, SFTConfig # <-- Swapped TrainingArguments for SFTConfig
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 
@@ -44,11 +43,11 @@ QLORA_TARGET_MODULES = [  # Which layers to adapt
     "gate_proj", "up_proj", "down_proj",
 ]
 
-# ── Training hyperparameters (tuned for 4GB VRAM) ────────────────────────────
+# ── Training hyperparameters (tuned for 11GB VRAM) ───────────────────────────
 
-MAX_SEQ_LENGTH = 512          # Keep short to fit in VRAM
-BATCH_SIZE = 1                # Minimum batch for 4GB
-GRADIENT_ACCUMULATION = 8     # Effective batch = 8
+MAX_SEQ_LENGTH = 1024         # Longer context for richer wiki content
+BATCH_SIZE = 4                # Larger batch for 11GB VRAM
+GRADIENT_ACCUMULATION = 4     # Effective batch = 16
 LEARNING_RATE = 2e-4
 NUM_EPOCHS = 3
 WARMUP_RATIO = 0.05
@@ -103,7 +102,8 @@ def main():
     # ── Check GPU ────────────────────────────────────────────────
     if torch.cuda.is_available():
         gpu_name = torch.cuda.get_device_name(0)
-        gpu_mem = torch.cuda.get_device_properties(0).total_mem / 1024**3
+        # Fixed the total_mem typo here!
+        gpu_mem = torch.cuda.get_device_properties(0).total_memory / 1024**3
         print(f"\n[GPU] {gpu_name} ({gpu_mem:.1f} GB)")
     else:
         print("\n[WARNING] No GPU detected! Training will be extremely slow on CPU.")
@@ -141,7 +141,7 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_NAME,
         quantization_config=bnb_config,
-        device_map="auto",
+        device_map={"": torch.cuda.current_device()},  # Pin to single GPU
         trust_remote_code=True,
         torch_dtype=torch.float16,
     )
@@ -165,7 +165,8 @@ def main():
     print(f"[LORA] Trainable: {trainable:,} / {total:,} params ({100 * trainable / total:.2f}%)")
 
     # ── Training args ────────────────────────────────────────────
-    training_args = TrainingArguments(
+    # Converted TrainingArguments to SFTConfig and moved formatting args inside
+    training_args = SFTConfig(
         output_dir=OUTPUT_DIR,
         num_train_epochs=NUM_EPOCHS,
         per_device_train_batch_size=BATCH_SIZE,
@@ -187,8 +188,12 @@ def main():
         optim="paged_adamw_8bit",  # Memory-efficient optimizer
         lr_scheduler_type="cosine",
         report_to="none",
-        dataloader_pin_memory=False,  # Save memory
+        dataloader_pin_memory=True,   # Faster data transfer to GPU
+        dataloader_num_workers=4,      # Parallel data loading
         remove_unused_columns=False,
+        max_length=MAX_SEQ_LENGTH,    # <-- Moved from SFTTrainer
+        packing=True,                 # <-- Moved from SFTTrainer
+        dataset_text_field="text",    # <-- Explicitly added for new trl versions
     )
 
     # ── Trainer ──────────────────────────────────────────────────
@@ -198,8 +203,7 @@ def main():
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
         processing_class=tokenizer,
-        max_seq_length=MAX_SEQ_LENGTH,
-        packing=True,  # Pack multiple short examples into one sequence
+        # max_seq_length and packing have been removed from here
     )
 
     # ── Train! ───────────────────────────────────────────────────

@@ -50,10 +50,19 @@ def classify_input(text: str) -> str:
         return "chat"
 
     try:
-        labels, probs = model.predict(stripped)
-        label = labels[0].replace("__label__", "")
-        confidence = probs[0]
-        return label if confidence > 0.5 else "chat"
+        # FastText can only process single lines — split multi-line input
+        # and classify each line. If ANY line is "search", return "search".
+        lines = [l.strip() for l in stripped.splitlines() if l.strip()]
+        if not lines:
+            return "chat"
+
+        for line in lines:
+            labels, probs = model.predict(line)
+            label = labels[0].replace("__label__", "")
+            confidence = probs[0]
+            if label == "search" and confidence > 0.5:
+                return "search"
+        return "chat"
     except Exception as e:
         print(f"[CLASSIFIER] Error: {e}", flush=True)
         return "chat"

@@ -42,3 +42,20 @@ test_audio.wav
 .DS_Store
 Thumbs.db
 ehthumbs.db
+
+# --- Fine-tuning Artifacts ---
+# Scraped/generated data (reproducible via scripts)
+finetune/raw_wiki_pages.json
+finetune/train_data.jsonl
+
+# Model weights (too large for git)
+finetune/bmo-qwen-merged/
+finetune/bmo-qwen-gguf/
+finetune/at_wiki_db/
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

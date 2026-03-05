@@ -11,6 +11,7 @@ from PIL import Image
 
 from .actions import execute_action_and_get_result
 from .classifier import classify_input
+from .rag import retrieve as rag_retrieve
 from .config import (
     BMO_IMAGE_FILE,
     CURRENT_CONFIG,
@@ -212,25 +213,103 @@ class ChatMixin:
 
     # -- Auto-search helper ----------------------------------------------------
 
+    def _extract_search_queries(self, user_message: str) -> list[str] | None:
+        """Use the LLM to extract search queries, or return None if the model can answer itself.
+
+        The LLM decides in a single call whether to search or rely on its
+        fine-tuned Adventure Time knowledge. Returns:
+          - list[str]: search queries for web search (only non-AT parts)
+          - None: ALL questions are about Adventure Time (no search needed)
+        """
+        prompt = [
+            {"role": "system", "content": (
+                "You extract web search queries from a user's message.\n"
+                "The user's message may contain multiple questions. Handle EACH question independently.\n\n"
+                "For each question, output one line:\n"
+                "- If the question is SPECIFICALLY about the TV show Adventure Time "
+                "(its characters like Finn, Jake, BMO, Marceline, Princess Bubblegum, Ice King, etc., "
+                "its episodes, locations like Land of Ooo, Candy Kingdom, etc., or its plot/lore), "
+                "output: AT\n"
+                "- For ANYTHING ELSE (real-world topics, products, brands, people, places, science, "
+                "technology, current events, history, or anything you're unsure about), "
+                "output a concise web search query.\n\n"
+                "When in doubt, output a search query. Only output AT if you are CERTAIN it's about the Adventure Time show.\n"
+                "Remove greetings and filler. Output ONLY 'AT' or search queries, one per line, nothing else.\n\n"
+                "Examples:\n"
+                "User: Tell me about Sapuwa water bottle and who is Finn?\n"
+                "Sapuwa water bottle\nAT\n\n"
+                "User: What is Zalo?\n"
+                "Zalo\n\n"
+                "User: Who is Marceline and what's the weather today?\n"
+                "AT\nweather today\n\n"
+                "User: Who created BMO?\n"
+                "AT"
+            )},
+            {"role": "user", "content": user_message},
+        ]
+        try:
+            resp = ollama.chat(
+                model=TEXT_MODEL,
+                messages=prompt,
+                stream=False,
+                options={"temperature": 0, "num_predict": 100},
+            )
+            raw = resp["message"]["content"].strip()
+            lines = [l.strip().lstrip("0123456789.-) ") for l in raw.splitlines()]
+            lines = [l for l in lines if l]
+
+            # Separate AT lines from search queries
+            queries = [l for l in lines if len(l) > 2 and l.upper() != "AT"]
+            at_count = sum(1 for l in lines if l.upper() == "AT")
+
+            if at_count:
+                print(f"[AUTO-SEARCH] {at_count} Adventure Time topic(s) → fine-tuned model", flush=True)
+            if queries:
+                print(f"[AUTO-SEARCH] {len(queries)} topic(s) need search", flush=True)
+                return queries[:3]
+            if at_count and not queries:
+                print(f"[AUTO-SEARCH] All Adventure Time → skip search", flush=True)
+                return None
+        except Exception as e:
+            print(f"[AUTO-SEARCH] Query extraction failed: {e}", flush=True)
+
+        # Fallback: use the raw message
+        return [user_message.strip()]
+
     def _auto_search(self, query: str) -> str | None:
         """Run a quick DuckDuckGo search and return context string, or None."""
         from ddgs import DDGS
-        print(f"[AUTO-SEARCH] Searching for: {query}", flush=True)
+        print(f"[AUTO-SEARCH] Raw: {query}", flush=True)
+
+        # Use LLM to extract clean search queries (or decide to skip search)
+        sub_queries = self._extract_search_queries(query)
+        if sub_queries is None:
+            # Adventure Time topic → use RAG retrieval from wiki DB
+            print("[AUTO-SEARCH] Adventure Time topic → RAG retrieval", flush=True)
+            chunks = rag_retrieve(query, top_k=5)
+            if chunks:
+                return "\n---\n".join(chunks)
+            print("[AUTO-SEARCH] RAG returned nothing, falling back to web", flush=True)
+            sub_queries = [query.strip()]
+
+        for i, sq in enumerate(sub_queries):
+            print(f"[AUTO-SEARCH] Query {i+1}: {sq}", flush=True)
+
+        all_parts = []
         try:
             with DDGS() as ddgs:
-                results = list(ddgs.text(query, region="us-en", max_results=2))
-                if not results:
-                    results = list(ddgs.news(query, region="us-en", max_results=2))
-                if results:
-                    parts = []
+                for sq in sub_queries:
+                    results = list(ddgs.text(sq, region="us-en", max_results=2))
+                    if not results:
+                        results = list(ddgs.news(sq, region="us-en", max_results=2))
                     for r in results:
                         title = r.get("title", "")
                         body = r.get("body", r.get("snippet", ""))
-                        parts.append(f"- {title}: {body[:200]}")
-                    return "\n".join(parts)
+                        all_parts.append(f"- {title}: {body[:200]}")
         except Exception as e:
             print(f"[AUTO-SEARCH] Error: {e}", flush=True)
-        return None
+
+        return "\n".join(all_parts) if all_parts else None
 
     def _summarize_and_speak(self, tool_result, user_text, model_to_use, img_path):
         summary_prompt = [
