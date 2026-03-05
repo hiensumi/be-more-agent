@@ -1,0 +1,296 @@
+__label__search Who is the president of the United States
+__label__search What is the capital of France
+__label__search When was the iPhone released
+__label__search Where is the Eiffel Tower
+__label__search How tall is Mount Everest
+__label__search What is the population of Tokyo
+__label__search Who invented the telephone
+__label__search Who won the World Cup
+__label__search Weather in Tokyo
+__label__search The cast of Breaking Bad
+__label__search Last season of Game of Thrones
+__label__search Release date of GTA 6
+__label__search Who directed Inception
+__label__search How to make pancakes
+__label__search Adventure Time finale date
+__label__search When did Adventure Time end
+__label__search BMO voice actor in real life
+__label__search Tell me about the dates of Fionna and Cake seasons
+__label__search The last episode date of Fiona and Cake
+__label__search Check the weather in Quang Ngai City
+__label__search Who is the CEO of Apple
+__label__search What is the latest news
+__label__search How much does a Tesla cost
+__label__search When was World War 2
+__label__search Who discovered penicillin
+__label__search What language do they speak in Brazil
+__label__search How old is the universe
+__label__search What is the distance from Earth to the Moon
+__label__search Who wrote Harry Potter
+__label__search When did the dinosaurs go extinct
+__label__search What is the tallest building in the world
+__label__search How many countries are in Europe
+__label__search Who painted the Mona Lisa
+__label__search What is the speed of light
+__label__search Current price of Bitcoin
+__label__search Who is the prime minister of Japan
+__label__search What year did Titanic come out
+__label__search How do you say hello in Japanese
+__label__search What is the meaning of life
+__label__search Recipe for chocolate cake
+__label__search Calories in a banana
+__label__search What is the stock price of Google
+__label__search Who founded Microsoft
+__label__search When is the next solar eclipse
+__label__search How far is Mars from Earth
+__label__search What is the GDP of China
+__label__search Who won the Oscar for best picture this year
+__label__search Latest iPhone model
+__label__search what happened today in the news
+__label__search tell me about climate change
+__label__search who is Elon Musk
+__label__search what is quantum computing
+__label__search population of India
+__label__search how to learn python programming
+__label__search best restaurants in New York
+__label__search flight time from Tokyo to London
+__label__search what is the temperature on Venus
+__label__search who voices BMO
+__label__search when was the last earthquake in Japan
+__label__search what is the salary of a software engineer
+__label__search translate hello to Spanish
+__label__search definition of entropy
+__label__search who is the king of England
+__label__search when did the Berlin Wall fall
+__label__search how to fix a flat tire
+__label__search what are the symptoms of flu
+__label__search who won the NBA finals
+__label__search release date of the new Marvel movie
+__label__search how many people live in Australia
+__label__search what time zone is California in
+__label__search who is the richest person in the world
+__label__search history of the Roman Empire
+__label__search what is the boiling point of water
+__label__search who discovered gravity
+__label__search when was electricity invented
+__label__search how to cook scrambled eggs
+__label__search what is the largest ocean
+__label__search who sings Bohemian Rhapsody
+__label__search when did World War 1 start
+__label__search how long does it take to fly to Japan
+__label__search what is the currency of South Korea
+__label__search who is the author of 1984
+__label__search latest score of the football game
+__label__search what causes earthquakes
+__label__search how to write a resume
+__label__search what is blockchain technology
+__label__search who directed the Dark Knight
+__label__search when was Python created
+__label__search what is the largest country by area
+__label__search how to bake bread at home
+__label__search who is the president of France
+__label__search what is the deepest part of the ocean
+__label__search search for news about robots
+__label__search look up the weather forecast
+__label__search google the latest tech news
+__label__search find information about black holes
+__label__search what are the side effects of ibuprofen
+__label__search how does photosynthesis work
+__label__search who built the pyramids
+__label__search when was the internet invented
+__label__search what is the most spoken language
+__label__search BMO tell me about the dates of Fionna and Cake seasons
+__label__search Hey BMO what year was the iPhone released
+__label__search BMO who won the World Cup
+__label__search BMO check the weather in Quang Ngai City
+__label__search BMO search for news about robots
+__label__search tell me about the cast of the new Star Wars movie
+__label__search how many episodes does Breaking Bad have
+__label__search when did Friends end
+__label__search who created Minecraft
+__label__search what is the newest Android version
+__label__search average height of humans
+__label__search what is dark matter
+__label__search how to change a car tire
+__label__search who is the governor of Texas
+__label__search when was the first computer made
+__label__search what is the national animal of Japan
+__label__search how to solve a Rubik's cube
+__label__search calories in a Big Mac
+__label__search who won the Grammy for best album
+__label__search What is Zalo
+__label__search What is Grab
+__label__search What is WeChat
+__label__search What is TikTok
+__label__search What is Shopee
+__label__search What is Discord
+__label__search What is Telegram
+__label__search What is Signal app
+__label__search What is a VPN
+__label__search What is ChatGPT
+__label__search What is an LLM
+__label__search What is NVIDIA
+__label__search What is SpaceX
+__label__search What is Neuralink
+__label__search What is Starlink
+__label__search What is a quasar
+__label__search What is kombucha
+__label__search What is sushi made of
+__label__search What is the James Webb telescope
+__label__search Which countries border Vietnam
+__label__search Which countries border France
+__label__search Which countries border Germany
+__label__search Which countries border China
+__label__search Which countries border India
+__label__search Which countries border Brazil
+__label__search Which countries border Russia
+__label__search Which countries border Thailand
+__label__search Which country is next to Japan
+__label__search What countries are near Australia
+__label__search borders of Mexico
+__label__search neighbors of South Korea
+__label__search How many countries border the United States
+__label__search What continent is Egypt in
+__label__search Where is Vietnam located
+__label__search Where is Madagascar
+__label__search What is the capital of Vietnam
+__label__search Who is the president of Vietnam
+__label__search What language do they speak in Vietnam
+__label__search Who is the CEO of Google
+__label__search Who is the CEO of Samsung
+__label__search Who is the founder of Tesla
+__label__search Who created Linux
+__label__search Who made ChatGPT
+__label__search Who invented WiFi
+__label__search What does NASA stand for
+__label__search What is the largest desert in the world
+__label__search What is the smallest country
+__label__search How many moons does Jupiter have
+__label__search What is the speed of sound
+__label__search When was the first iPhone released
+__label__search When did COVID start
+__label__search How tall is the Statue of Liberty
+__label__search What is the longest river in the world
+__label__search What are the 7 wonders of the world
+__label__search Who is the prime minister of Canada
+__label__search How old is the Great Wall of China
+__label__search What is the population of Vietnam
+__label__search BMO what is Zalo
+__label__search BMO which countries border Vietnam
+__label__search Hey BMO what is the capital of Vietnam
+__label__search Tell me about Zalo
+__label__search Tell me about Vietnam
+__label__search Explain what a black hole is
+__label__search Describe how WiFi works
+__label__search What are the ingredients of pho
+__label__search What is banh mi
+__label__search Hi BMO! Which country borders Vietnam?
+__label__search Hi BMO! What is the population of Japan?
+__label__search Hi BMO! Who is the CEO of Apple?
+__label__search Hi! What is Zalo?
+__label__search Hi! Where is Vietnam?
+__label__search Hello! What is the capital of Thailand?
+__label__search Hey! Who invented the internet?
+__label__search Good morning! What is the weather today?
+__label__search Hi BMO, what is quantum computing
+__label__search Hello BMO, who is the president of the United States
+__label__search Hey BMO! What is the tallest building in the world
+__label__chat Hello BMO
+__label__chat Hi
+__label__chat Hey
+__label__chat Hello
+__label__chat Good morning
+__label__chat Good night
+__label__chat Goodbye
+__label__chat Bye
+__label__chat Thanks
+__label__chat Thank you
+__label__chat How are you doing
+__label__chat How are you
+__label__chat Tell me about yourself
+__label__chat What do you think about cats
+__label__chat Can you sing a song
+__label__chat Play a game with me
+__label__chat You are cute
+__label__chat I love you BMO
+__label__chat Do you like pizza
+__label__chat What is your favorite color
+__label__chat Are you happy
+__label__chat Can you dance
+__label__chat Tell me a joke
+__label__chat What is your name
+__label__chat Do you have friends
+__label__chat Are you a robot
+__label__chat What do you think about me
+__label__chat Will you be my friend
+__label__chat Can you help me
+__label__chat I am sad
+__label__chat I am happy
+__label__chat You are funny
+__label__chat That was cool
+__label__chat Thank you so much
+__label__chat You did a great job
+__label__chat I love Adventure Time
+__label__chat You are the best
+__label__chat What is your favorite game
+__label__chat Do you dream
+__label__chat What makes you happy
+__label__chat Are you alive
+__label__chat Can you feel emotions
+__label__chat What is your favorite food
+__label__chat Tell me something fun
+__label__chat Let us play together
+__label__chat You are awesome
+__label__chat That is interesting
+__label__chat I agree
+__label__chat I disagree
+__label__chat That is funny
+__label__chat LOL
+__label__chat Haha
+__label__chat Nice
+__label__chat Cool
+__label__chat Okay
+__label__chat Sure
+__label__chat Yes
+__label__chat No
+__label__chat Maybe
+__label__chat I do not know
+__label__chat Whatever
+__label__chat Good job
+__label__chat Well done
+__label__chat What should we do
+__label__chat Let us talk
+__label__chat I am bored
+__label__chat Entertain me
+__label__chat Sing me a song
+__label__chat Play some music
+__label__chat Dance for me
+__label__chat Do a trick
+__label__chat What are you doing
+__label__chat How is your day
+__label__chat Are you tired
+__label__chat Do you sleep
+__label__chat What do you do for fun
+__label__chat Who is your best friend
+__label__chat Do you like Finn
+__label__chat Do you like Jake
+__label__chat Tell me about Finn and Jake
+__label__chat What is your favorite episode
+__label__chat Hello there
+__label__chat Hey buddy
+__label__chat Yo
+__label__chat Sup
+__label__chat Howdy
+__label__chat Hi BMO
+__label__chat Hey BMO
+__label__chat Good evening
+__label__chat What time is it
+__label__chat Take a photo
+__label__chat Take a picture
+__label__chat Capture an image
+__label__chat What do you see
+__label__chat Show me what you see
+__label__chat Look around
+__label__chat What does the room look like
+__label__chat Can you see me
+__label__chat Check the time

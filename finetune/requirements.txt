@@ -1,0 +1,17 @@
+# Fine-tuning dependencies (separate from main BMO requirements)
+# Install with: pip install -r finetune/requirements.txt
+
+# Scraping
+requests>=2.31.0
+
+# Training
+torch>=2.1.0
+transformers>=4.38.0
+peft>=0.9.0
+bitsandbytes>=0.43.0
+datasets>=2.16.0
+trl>=0.8.0
+accelerate>=0.27.0
+
+# GGUF conversion (optional — can also use llama.cpp directly)
+# llama-cpp-python>=0.2.0

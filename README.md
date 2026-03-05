@@ -32,7 +32,12 @@ This project turns a Raspberry Pi into a fully functional, conversational AI age
 
 ```text
 be-more-agent/
-├── agent.py                   # The main brain script
+├── agent.py                   # Thin launcher
+├── be_more_agent/             # Main Python package
+│   ├── gui.py                 # BotGUI runtime loop
+│   ├── actions.py             # Tool/action execution (time/search/camera)
+│   ├── prompts.py             # System prompt templates
+│   └── config.py              # Config loading + constants
 ├── setup.sh                   # Auto-installer script
 ├── wakeword.onnx              # OpenWakeWord model (The "Ear")
 ├── config.json                # User settings (Models, Prompt, Hardware)
