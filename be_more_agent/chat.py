@@ -93,9 +93,11 @@ class ChatMixin:
             if input_class == "search":
                 search_ctx = self._auto_search(text)
                 if search_ctx:
+                    # Truncate context to keep input short for fast inference
+                    search_ctx = search_ctx[:800]
                     text_with_ctx = (
                         f"{text}\n\n"
-                        f"SEARCH RESULTS (answer using ONLY this information, do NOT say you cannot access data):\n{search_ctx}"
+                        f"SEARCH RESULTS (answer briefly using this info):\n{search_ctx}"
                     )
                     user_msg = {"role": "user", "content": text_with_ctx}
                 else:
@@ -277,20 +279,19 @@ class ChatMixin:
         return [user_message.strip()]
 
     def _auto_search(self, query: str) -> str | None:
-        """Run a quick DuckDuckGo search and return context string, or None."""
+        """Try RAG first (fast, no LLM call), then fall back to web search."""
         from ddgs import DDGS
         print(f"[AUTO-SEARCH] Raw: {query}", flush=True)
 
-        # Use LLM to extract clean search queries (or decide to skip search)
-        sub_queries = self._extract_search_queries(query)
-        if sub_queries is None:
-            # Adventure Time topic → use RAG retrieval from wiki DB
-            print("[AUTO-SEARCH] Adventure Time topic → RAG retrieval", flush=True)
-            chunks = rag_retrieve(query, top_k=5)
-            if chunks:
-                return "\n---\n".join(chunks)
-            print("[AUTO-SEARCH] RAG returned nothing, falling back to web", flush=True)
-            sub_queries = [query.strip()]
+        # Step 1: Try RAG retrieval first (just an embedding lookup, ~1-2s)
+        chunks = rag_retrieve(query, top_k=5)
+        if chunks:
+            print(f"[AUTO-SEARCH] RAG found {len(chunks)} relevant chunks", flush=True)
+            return "\n---\n".join(chunks)
+
+        # Step 2: No RAG results → web search
+        print("[AUTO-SEARCH] RAG found nothing → web search", flush=True)
+        sub_queries = [query.strip()]
 
         for i, sq in enumerate(sub_queries):
             print(f"[AUTO-SEARCH] Query {i+1}: {sq}", flush=True)

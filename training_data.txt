@@ -294,3 +294,39 @@ __label__chat Look around
 __label__chat What does the room look like
 __label__chat Can you see me
 __label__chat Check the time
+__label__search What games do you have
+__label__search What video games are installed on BMO
+__label__search What games does BMO play
+__label__search What games do Finn and Jake play
+__label__search Tell me about the games on your hard drive
+__label__search List the video games BMO has
+__label__search What episodes feature BMO
+__label__search Who created BMO
+__label__search Who built BMO
+__label__search What is the Enchiridion
+__label__search Tell me about the Lich
+__label__search Who is Marceline's dad
+__label__search What happened in the Mushroom War
+__label__search Tell me about the Candy Kingdom
+__label__search Who is Flame Princess
+__label__search What powers does Ice King have
+__label__search What is the Ice Crown
+__label__search Tell me about Prismo
+__label__search Who is GOLB
+__label__search What happened to Simon Petrikov
+__label__search Tell me about Fern
+__label__search What is the Tree Fort
+__label__search How did Adventure Time end
+__label__search What are BMO's abilities
+__label__search Who are the main characters in Adventure Time
+__label__search What is the Land of Ooo
+__label__search Tell me about Lemongrab
+__label__search What happened in the finale of Adventure Time
+__label__search Who is Princess Bubblegum
+__label__search What is the Nightosphere
+__label__search Describe BMO
+__label__search What does BMO look like
+__label__search How old is Finn in Adventure Time
+__label__search Who is Jake the Dog
+__label__search What is Lumpy Space
+__label__search Tell me about Distant Lands

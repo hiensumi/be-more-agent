@@ -22,6 +22,8 @@ DEFAULT_CONFIG = {
 OLLAMA_OPTIONS = {
     "keep_alive": "-1",
     "num_thread": 4,
+    "num_ctx": 2048,
+    "num_predict": 100,
     "temperature": 0.7,
     "top_k": 40,
     "top_p": 0.9,
