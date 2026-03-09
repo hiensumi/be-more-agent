@@ -1,7 +1,11 @@
 {
-    "text_model": "qwen2.5:0.5b",
+    "text_model": "qwen2.5:7b",
     "vision_model": "moondream",
     "voice_model": "piper/en_GB-semaine-medium.onnx",
     "chat_memory": false,
-    "camera_rotation": 180
+    "camera_rotation": 180,
+    "base_prompt": "custom_base_prompt",
+    "ollama_host": "http://localhost:7676",
+    "tavily_api_key": "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",
+    "game_path": ""
 }

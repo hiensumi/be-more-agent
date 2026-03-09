@@ -13,7 +13,6 @@ import time
 import traceback
 import warnings
 
-import ollama
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk
@@ -23,13 +22,15 @@ from openwakeword.model import Model
 from .audio import AudioMixin
 from .chat import ChatMixin
 from .config import (
+    OLLAMA_CLIENT,
     TEXT_MODEL,
     WAKE_WORD_MODEL,
     greeting_sounds_dir,
 )
 from .states import BotStates
 
-warnings.filterwarnings("ignore", category=RuntimeWarning, module="duckduckgo_search")
+
+
 
 
 class BotGUI(AudioMixin, ChatMixin):
@@ -164,7 +165,7 @@ class BotGUI(AudioMixin, ChatMixin):
         self.save_chat_history()
 
         try:
-            ollama.generate(model=TEXT_MODEL, prompt="", keep_alive=0)
+            OLLAMA_CLIENT.generate(model=TEXT_MODEL, prompt="", keep_alive=0)
         except Exception:
             pass
 
@@ -358,7 +359,7 @@ class BotGUI(AudioMixin, ChatMixin):
     def _warm_up(self):
         self.set_state(BotStates.WARMUP, "Warming up brains...")
         try:
-            ollama.generate(model=TEXT_MODEL, prompt="", keep_alive=-1)
+            OLLAMA_CLIENT.generate(model=TEXT_MODEL, prompt="", keep_alive=-1)
         except Exception as e:
             print(f"Failed to load {TEXT_MODEL}: {e}", flush=True)
         # Pre-load FastText classifier (instant, no Ollama needed)

@@ -257,8 +257,10 @@ class AudioMixin:
             piper_dir = os.path.abspath("./piper")
             piper_env["LD_LIBRARY_PATH"] = piper_dir + ":" + piper_env.get("LD_LIBRARY_PATH", "")
 
+            piper_bin = os.path.join(piper_dir, "piper.exe" if os.name == "nt" else "piper")
+
             self.current_audio_process = subprocess.Popen(
-                ["./piper/piper", "--model", voice_model, "--output-raw"],
+                [piper_bin, "--model", voice_model, "--output-raw"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL,

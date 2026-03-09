@@ -32,15 +32,20 @@ OVERLAP_WORDS = 15        # overlap when sub-splitting long sections
 
 def _looks_like_header(line: str, next_line: str | None) -> bool:
     """Heuristic: a header is a short line (< 60 chars) starting with uppercase,
-    followed by a longer content line.  Filters out false positives like single
+    followed by a longer content line. Filters out false positives like single
     sentences by requiring the next line to be substantially longer."""
     stripped = line.strip()
     if not stripped or len(stripped) >= 60:
         return False
-    if not re.match(r'^[A-Z]', stripped):
+    if not re.match(r'^[A-Z0-9]', stripped):
         return False
-    if stripped.startswith(('(', '[', '"', "'")):
+    if stripped.startswith(('(', '[', '"', "'", '-', '*')):
         return False
+        
+    # Reject lines ending in sentence punctuation (likely just a short sentence)
+    if stripped.endswith(('.', ':', ',', ';', '"', "'", ')', '?', '!')):
+        return False
+
     # Next line should be content (longer than header)
     if next_line:
         return len(next_line.strip()) > len(stripped)

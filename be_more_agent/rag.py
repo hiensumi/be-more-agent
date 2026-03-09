@@ -17,7 +17,8 @@ import re
 from collections import Counter
 
 import numpy as np
-import ollama
+
+from .config import OLLAMA_CLIENT
 
 _DB_DIR = os.path.join(os.path.dirname(__file__), "..", "finetune", "at_wiki_db")
 _CHUNKS_FILE = os.path.join(_DB_DIR, "chunks.json")
@@ -127,7 +128,7 @@ def retrieve(query: str, top_k: int = _FINAL_K) -> list[str]:
         return []
 
     # Step 1: Broad vector search — get top candidates
-    resp = ollama.embed(model=_EMBED_MODEL, input=[query])
+    resp = OLLAMA_CLIENT.embed(model=_EMBED_MODEL, input=[query])
     q_emb = np.array(resp["embeddings"][0], dtype=np.float32)
     q_emb = q_emb / (np.linalg.norm(q_emb) or 1)
 

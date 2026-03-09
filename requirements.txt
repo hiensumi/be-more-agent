@@ -4,5 +4,5 @@ scipy
 openwakeword
 onnxruntime
 ollama
-duckduckgo-search
+tavily-python
 Pillow

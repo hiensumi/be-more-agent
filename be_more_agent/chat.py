@@ -6,20 +6,21 @@ import re
 import subprocess
 import threading
 
-import ollama
 from PIL import Image
 
-from .actions import execute_action_and_get_result
+from .actions import execute_action_and_get_result, _get_tavily_client
 from .classifier import classify_input
 from .rag import retrieve as rag_retrieve
 from .config import (
     BMO_IMAGE_FILE,
     CURRENT_CONFIG,
     MEMORY_FILE,
+    OLLAMA_CLIENT,
     OLLAMA_OPTIONS,
     STATIC_MEMORY_FILE,
     TEXT_MODEL,
     VISION_MODEL,
+    get_dynamic_options,
 )
 from .prompts import SYSTEM_PROMPT
 from .states import BotStates
@@ -103,7 +104,24 @@ class ChatMixin:
                 else:
                     user_msg = {"role": "user", "content": text}
             else:
-                user_msg = {"role": "user", "content": text}
+                import re
+                rag_query = text
+                if "BMO" not in rag_query.upper():
+                    rag_query = re.sub(r'\byour\b', "BMO's", rag_query, flags=re.IGNORECASE)
+                    rag_query = re.sub(r'\byou\b', 'BMO', rag_query, flags=re.IGNORECASE)
+                    if rag_query == text:
+                        rag_query = f"BMO {text}"
+                        
+                rag_ctx = rag_retrieve(rag_query, top_k=3)
+                if rag_ctx:
+                    joined_ctx = "\n---\n".join(rag_ctx)[:600]
+                    text_with_ctx = (
+                        f"{text}\n\n"
+                        f"BACKGROUND INFO (use this only if relevant to the question):\n{joined_ctx}"
+                    )
+                    user_msg = {"role": "user", "content": text_with_ctx}
+                else:
+                    user_msg = {"role": "user", "content": text}
 
         if img_path:
             messages = [{"role": "user", "content": text, "images": [img_path]}]
@@ -117,11 +135,11 @@ class ChatMixin:
         sentence_buffer = ""
 
         try:
-            stream = ollama.chat(
+            stream = OLLAMA_CLIENT.chat(
                 model=model_to_use,
                 messages=messages,
                 stream=True,
-                options=OLLAMA_OPTIONS,
+                options=get_dynamic_options(messages),
             )
 
             is_action_mode = False
@@ -250,7 +268,7 @@ class ChatMixin:
             {"role": "user", "content": user_message},
         ]
         try:
-            resp = ollama.chat(
+            resp = OLLAMA_CLIENT.chat(
                 model=TEXT_MODEL,
                 messages=prompt,
                 stream=False,
@@ -279,36 +297,25 @@ class ChatMixin:
         return [user_message.strip()]
 
     def _auto_search(self, query: str) -> str | None:
-        """Try RAG first (fast, no LLM call), then fall back to web search."""
-        from ddgs import DDGS
+        """Search the web using Tavily."""
         print(f"[AUTO-SEARCH] Raw: {query}", flush=True)
-
-        # Step 1: Try RAG retrieval first (just an embedding lookup, ~1-2s)
-        chunks = rag_retrieve(query, top_k=5)
-        if chunks:
-            print(f"[AUTO-SEARCH] RAG found {len(chunks)} relevant chunks", flush=True)
-            return "\n---\n".join(chunks)
-
-        # Step 2: No RAG results → web search
-        print("[AUTO-SEARCH] RAG found nothing → web search", flush=True)
-        sub_queries = [query.strip()]
-
-        for i, sq in enumerate(sub_queries):
-            print(f"[AUTO-SEARCH] Query {i+1}: {sq}", flush=True)
+        client = _get_tavily_client()
+        if not client:
+            return None
 
         all_parts = []
         try:
-            with DDGS() as ddgs:
-                for sq in sub_queries:
-                    results = list(ddgs.text(sq, region="us-en", max_results=2))
-                    if not results:
-                        results = list(ddgs.news(sq, region="us-en", max_results=2))
-                    for r in results:
-                        title = r.get("title", "")
-                        body = r.get("body", r.get("snippet", ""))
-                        all_parts.append(f"- {title}: {body[:200]}")
+            response = client.search(
+                query=query.strip(),
+                search_depth="basic",
+                max_results=3,
+            )
+            for r in response.get("results", []):
+                title = r.get("title", "")
+                content = r.get("content", "")
+                all_parts.append(f"- {title}: {content[:200]}")
         except Exception as e:
-            print(f"[AUTO-SEARCH] Error: {e}", flush=True)
+            print(f"[AUTO-SEARCH] Tavily error: {e}", flush=True)
 
         return "\n".join(all_parts) if all_parts else None
 
@@ -321,11 +328,11 @@ class ChatMixin:
         self.set_state(BotStates.THINKING, "Reading...")
         self.thinking_sound_active.set()
 
-        final_resp = ollama.chat(
+        final_resp = OLLAMA_CLIENT.chat(
             model=model_to_use,
             messages=summary_prompt,
             stream=False,
-            options=OLLAMA_OPTIONS,
+            options=get_dynamic_options(summary_prompt),
         )
         final_text = final_resp["message"]["content"]
 
