@@ -7,5 +7,5 @@
     "base_prompt": "custom_base_prompt",
     "ollama_host": "http://localhost:7676",
     "tavily_api_key": "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",
-    "game_path": ""
+    "game_path": "https://flame130.itch.io/bmo-adventure-time-remake"
 }
