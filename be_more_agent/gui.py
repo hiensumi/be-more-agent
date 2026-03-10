@@ -219,6 +219,128 @@ class BotGUI(AudioMixin, ChatMixin):
                     pass
             self.set_state(BotStates.IDLE, "Interrupted.")
 
+    # -- Games Menu ------------------------------------------------------------
+    
+    def show_games_menu(self):
+        def _build():
+            if hasattr(self, 'games_menu_frame') and self.games_menu_frame is not None:
+                return  
+
+            self.games_menu_frame = tk.Frame(self.master, bg="#1a3b22")
+            self.games_menu_frame.place(x=0, y=0, width=self.BG_WIDTH, height=self.BG_HEIGHT)
+
+            title = tk.Label(self.games_menu_frame, text="BMO GAMES GALLERY", bg="#1a3b22", fg="#55ff55", font=("Courier", 32, "bold"))
+            title.place(relx=0.5, rely=0.25, anchor=tk.CENTER)
+            self.menu_options = [
+                "Adventure Time Remake!", 
+                "Snake", 
+                "Flappy BMO", 
+                "BMO Pong", 
+                "Space Invaders"
+            ]
+            self.menu_selection = 0
+
+            self.menu_labels = []
+            for i, opt in enumerate(self.menu_options):
+                lbl = tk.Label(self.games_menu_frame, text=opt, bg="#1a3b22", fg="#aaffaa", font=("Courier", 20))
+                lbl.place(relx=0.5, rely=0.35 + (i * 0.12), anchor=tk.CENTER)
+                self.menu_labels.append(lbl)
+
+            self._update_menu_highlight()
+
+            # Hijack global bindings
+            self.master.bind("<Up>", self._menu_up)
+            self.master.bind("<w>", self._menu_up)
+            self.master.bind("<W>", self._menu_up)
+            self.master.bind("<Down>", self._menu_down)
+            self.master.bind("<s>", self._menu_down)
+            self.master.bind("<S>", self._menu_down)
+            self.master.bind("<Return>", self._menu_select)
+            self.master.bind("<space>", self._menu_select)
+            self.master.bind("<BackSpace>", self._menu_back)
+            self.master.bind("<Escape>", self._menu_back)
+
+        self.master.after(0, _build)
+
+    def _update_menu_highlight(self):
+        for i, lbl in enumerate(self.menu_labels):
+            if i == self.menu_selection:
+                lbl.config(fg="#ffffff", text=f"►  {self.menu_options[i]}  ◄") 
+            else:
+                lbl.config(fg="#4d8f58", text=f"   {self.menu_options[i]}   ")
+
+    def _menu_up(self, event):
+        self.menu_selection = (self.menu_selection - 1) % len(self.menu_options)
+        self._update_menu_highlight()
+        return "break"
+
+    def _menu_down(self, event):
+        self.menu_selection = (self.menu_selection + 1) % len(self.menu_options)
+        self._update_menu_highlight()
+        return "break"
+
+    def _menu_select(self, event):
+        selected = self.menu_options[self.menu_selection]
+        self._close_games_menu()
+        
+        import subprocess
+        
+        if selected == "Adventure Time Remake!":
+            from .actions import launch_web_game
+            success = launch_web_game()
+            if success:
+                self.set_state(BotStates.IDLE, "Game launched!")
+            else:
+                self.set_state(BotStates.ERROR, "Failed to launch web game.")
+        elif selected == "Snake":
+            try:
+                subprocess.Popen(["python", "games/snake.py"])
+                self.set_state(BotStates.IDLE, "Snake launched!")
+            except Exception as e:
+                self.set_state(BotStates.ERROR, f"Failed to launch Snake: {e}")
+        elif selected == "Flappy BMO":
+            try:
+                subprocess.Popen(["python", "games/flappy_bmo.py"])
+                self.set_state(BotStates.IDLE, "Flappy BMO launched!")
+            except Exception as e:
+                self.set_state(BotStates.ERROR, f"Failed to launch Flappy BMO: {e}")
+        elif selected == "BMO Pong":
+            try:
+                subprocess.Popen(["python", "games/pong.py"])
+                self.set_state(BotStates.IDLE, "Pong launched!")
+            except Exception as e:
+                self.set_state(BotStates.ERROR, f"Failed to launch Pong: {e}")
+        elif selected == "Space Invaders":
+            try:
+                subprocess.Popen(["python", "games/space_invaders.py"])
+                self.set_state(BotStates.IDLE, "Space Invaders launched!")
+            except Exception as e:
+                self.set_state(BotStates.ERROR, f"Failed to launch Space Invaders: {e}")
+                
+        return "break"
+
+    def _menu_back(self, event):
+        self._close_games_menu()
+        return "break"
+
+    def _close_games_menu(self):
+        if hasattr(self, 'games_menu_frame') and self.games_menu_frame:
+            self.games_menu_frame.destroy()
+            self.games_menu_frame = None
+            
+        # Restore normal BMO behavior
+        self.master.bind("<Escape>", self.exit_fullscreen)
+        self.master.bind("<Return>", self.handle_ptt_toggle)
+        self.master.bind("<space>", self.handle_speaking_interrupt)
+        
+        self.master.unbind("<Up>")
+        self.master.unbind("<Down>")
+        self.master.unbind("<w>")
+        self.master.unbind("<W>")
+        self.master.unbind("<s>")
+        self.master.unbind("<S>")
+        self.master.unbind("<BackSpace>")
+
     # -- Animations ------------------------------------------------------------
 
     def load_animations(self):
@@ -313,7 +435,7 @@ class BotGUI(AudioMixin, ChatMixin):
     def safe_main_execution(self):
         try:
             self._warm_up()
-            self.tts_active.set()
+            self.tts_active.clear()
             self.tts_thread = threading.Thread(target=self._tts_worker, daemon=True)
             self.tts_thread.start()
 

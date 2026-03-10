@@ -72,7 +72,7 @@ def _tokenize(text: str) -> list[str]:
 
 def _bm25_score(query_tokens: list[str], doc_tokens: list[str],
                 avg_dl: float, n_docs: int, df: dict[str, int],
-                k1: float = 1.5, b: float = 0.75) -> float:
+                k1: float = 1.2, b: float = 0.75) -> float:
     """BM25 score for a single document against the query."""
     tf = Counter(doc_tokens)
     dl = len(doc_tokens)
@@ -94,8 +94,15 @@ def _rerank_bm25(query: str, candidates: list[dict], top_n: int = 3) -> list[dic
     if not query_tokens:
         return candidates[:top_n]
 
-    # Tokenize all candidate docs
-    doc_tokens_list = [_tokenize(c["text"]) for c in candidates]
+    # Tokenize all candidate docs (boost title matches 3x)
+    doc_tokens_list = []
+    for c in candidates:
+        tokens = _tokenize(c["text"])
+        title_tokens = _tokenize(c["title"])
+        # Append title tokens multiple times to heavily weight title matches
+        tokens.extend(title_tokens * 3)
+        doc_tokens_list.append(tokens)
+
     n_docs = len(candidates)
     avg_dl = sum(len(dt) for dt in doc_tokens_list) / max(n_docs, 1)
 

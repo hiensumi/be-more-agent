@@ -195,6 +195,10 @@ class ChatMixin:
 
         tool_result = execute_action_and_get_result(action_data)
 
+        if tool_result == "LAUNCH_GAMES_MENU":
+            self.show_games_menu()
+            return
+
         if tool_result and tool_result.startswith("CHAT_FALLBACK::"):
             chat_text = tool_result.split("::", 1)[1]
             self.thinking_sound_active.clear()
