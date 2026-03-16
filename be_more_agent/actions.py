@@ -175,7 +175,7 @@ def inject_styles(window):
 
 threading.Thread(target=hide_taskbar_icon, daemon=True).start()
 window = webview.create_window('BMO Game Mode', '{game_path}', x=0, y=0, width=800, height=480, frameless=True, background_color='#92E6AE')
-webview.start(inject_styles, window)
+webview.start(inject_styles, window, private_mode=False)
 """
     runner_path = os.path.join(tempfile.gettempdir(), 'bmo_web_game.py')
     with open(runner_path, 'w') as f:
