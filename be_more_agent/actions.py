@@ -27,6 +27,9 @@ import time
 import threading
 
 def hide_taskbar_icon():
+    import sys
+    if sys.platform != 'win32':
+        return
     for _ in range(10):
         time.sleep(0.5)
         try:
