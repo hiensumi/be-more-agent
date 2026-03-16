@@ -1,8 +1,10 @@
 sounddevice
-numpy
+numpy<2.0.0
 scipy
 openwakeword
 onnxruntime
 ollama
 tavily-python
 Pillow
+pywebview
+pygame

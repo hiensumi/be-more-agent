@@ -14,6 +14,15 @@ def _get_tavily_client():
     return TavilyClient(api_key=api_key)
 
 
+def _get_python_executable():
+    import sys
+    import os
+    if sys.platform != "win32":
+        venv_path = os.path.join(os.getcwd(), "venv", "bin", "python")
+        if os.path.exists(venv_path):
+            return venv_path
+    return sys.executable
+
 def launch_web_game():
     import os
     import subprocess
@@ -191,7 +200,7 @@ webview.start(inject_styles, window, private_mode=False)
         f.write(webview_script)
         
     try:
-        subprocess.Popen([sys.executable, runner_path])
+        subprocess.Popen([_get_python_executable(), runner_path])
         return True
     except Exception as e:
         print(f"Error launching web game: {e}")
