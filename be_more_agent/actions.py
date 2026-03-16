@@ -22,6 +22,14 @@ def launch_web_game():
     game_path = "https://html-classic.itch.zone/html/13484643/D:/BmoV1.1/index.html"
     
     webview_script = f"""
+import os
+import sys
+
+# Disable WebKit GTK hardware acceleration on Linux to prevent GStreamer/WebGL crashes
+if sys.platform != 'win32':
+    os.environ['WEBKIT_DISABLE_COMPOSITING_MODE'] = '1'
+    os.environ['LIBGL_ALWAYS_SOFTWARE'] = '1'
+    
 import webview
 import time
 import threading
