@@ -18,6 +18,7 @@ def launch_web_game():
     import os
     import subprocess
     import tempfile
+    import sys
     
     game_path = "https://html-classic.itch.zone/html/13484643/D:/BmoV1.1/index.html"
     
@@ -190,7 +191,7 @@ webview.start(inject_styles, window, private_mode=False)
         f.write(webview_script)
         
     try:
-        subprocess.Popen(["python", runner_path])
+        subprocess.Popen([sys.executable, runner_path])
         return True
     except Exception as e:
         print(f"Error launching web game: {e}")

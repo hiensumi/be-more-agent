@@ -284,6 +284,7 @@ class BotGUI(AudioMixin, ChatMixin):
         self._close_games_menu()
         
         import subprocess
+        import sys
         
         if selected == "Adventure Time Remake!":
             from .actions import launch_web_game
@@ -294,25 +295,25 @@ class BotGUI(AudioMixin, ChatMixin):
                 self.set_state(BotStates.ERROR, "Failed to launch web game.")
         elif selected == "Snake":
             try:
-                subprocess.Popen(["python", "games/snake.py"])
+                subprocess.Popen([sys.executable, "games/snake.py"])
                 self.set_state(BotStates.IDLE, "Snake launched!")
             except Exception as e:
                 self.set_state(BotStates.ERROR, f"Failed to launch Snake: {e}")
         elif selected == "Flappy BMO":
             try:
-                subprocess.Popen(["python", "games/flappy_bmo.py"])
+                subprocess.Popen([sys.executable, "games/flappy_bmo.py"])
                 self.set_state(BotStates.IDLE, "Flappy BMO launched!")
             except Exception as e:
                 self.set_state(BotStates.ERROR, f"Failed to launch Flappy BMO: {e}")
         elif selected == "BMO Pong":
             try:
-                subprocess.Popen(["python", "games/pong.py"])
+                subprocess.Popen([sys.executable, "games/pong.py"])
                 self.set_state(BotStates.IDLE, "Pong launched!")
             except Exception as e:
                 self.set_state(BotStates.ERROR, f"Failed to launch Pong: {e}")
         elif selected == "Space Invaders":
             try:
-                subprocess.Popen(["python", "games/space_invaders.py"])
+                subprocess.Popen([sys.executable, "games/space_invaders.py"])
                 self.set_state(BotStates.IDLE, "Space Invaders launched!")
             except Exception as e:
                 self.set_state(BotStates.ERROR, f"Failed to launch Space Invaders: {e}")
